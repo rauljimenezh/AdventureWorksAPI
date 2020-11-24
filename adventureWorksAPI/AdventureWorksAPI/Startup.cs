@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using AdventureWorksAPI.Models;
 using AdventureWorksAPI.Controllers;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace AdventureWorksAPI
 {
@@ -28,6 +29,10 @@ namespace AdventureWorksAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddMvc(option => option.EnableEndpointRouting = false)
+            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0)
+            .AddNewtonsoftJson(opt => opt.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore);
 
             services.AddDbContext<AdventureWorks2019Context>(options =>
              options.UseSqlServer(Configuration.GetConnectionString("AdventureWorksDB")));

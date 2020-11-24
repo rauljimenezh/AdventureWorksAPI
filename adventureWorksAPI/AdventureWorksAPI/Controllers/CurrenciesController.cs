@@ -31,7 +31,30 @@ namespace AdventureWorksAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Currency>> GetCurrency(string id)
         {
-            var currency = await _context.Currencies.FindAsync(id);
+            //obtiene el registro seleccionado por el parametro id de la moneda
+            //var currency = await _context.Currencies.FindAsync(id);
+
+            //obtiene el registro seleccionado por el parametro id de la moneda
+            //var currency =  _context.Currencies.Where(cur => cur.CurrencyCode == id).FirstOrDefault();
+
+            //obtiene el registro seleccionado por el parametro id, ademas obtiene datos de registros relacionados ejemplo: el pais de la moneda
+            //var currency = _context.Currencies.Include(cur => cur.CountryRegionCurrencies)
+            //                                  .Where(cur => cur.CurrencyCode == id)
+            //                                  .FirstOrDefault();
+
+            //var currency = _context.Currencies.Include(cur => cur.CountryRegionCurrencies)
+            //                          .Include(cur => cur.CurrencyRateFromCurrencyCodeNavigations)
+            //                          //.Include(cur => cur.CurrencyRateToCurrencyCodeNavigations)
+            //                          .Where(cur => cur.CurrencyCode == id)
+            //                          .FirstOrDefault();
+
+            var currency = await _context.Currencies.SingleAsync(cur => cur.CurrencyCode == id);
+
+            _context.Entry(currency)
+               .Collection(cur => cur.CountryRegionCurrencies)
+               .Query()
+               .Load();
+
 
             if (currency == null)
             {
